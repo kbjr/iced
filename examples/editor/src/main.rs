@@ -45,7 +45,11 @@ impl Editor {
         (
             Self {
                 file: None,
-                content: text_editor::Content::new(),
+                content: {
+                    let mut content = text_editor::Content::new();
+                    content.set_tab_width(2);
+                    content
+                },
                 theme: highlighter::Theme::SolarizedDark,
                 word_wrap: true,
                 is_loading: true,
@@ -87,6 +91,7 @@ impl Editor {
                 if !self.is_loading {
                     self.file = None;
                     self.content = text_editor::Content::new();
+                    self.content.set_tab_width(2);
                 }
 
                 Task::none()
@@ -107,6 +112,7 @@ impl Editor {
                 if let Ok((path, contents)) = result {
                     self.file = Some(path);
                     self.content = text_editor::Content::with_text(&contents);
+                    self.content.set_tab_width(2);
                 }
 
                 Task::none()
@@ -219,7 +225,26 @@ impl Editor {
                             Some(text_editor::Binding::Custom(
                                 Message::SaveFile,
                             ))
-                        }
+                        },
+
+                        keyboard::Key::Named(keyboard::key::Named::Tab) => {
+                            if key_press.modifiers.shift() {
+                                Some(text_editor::Binding::Custom(
+                                    Message::ActionPerformed(text_editor::Action::Edit(
+                                        text_editor::Edit::Unindent
+                                    ))
+                                ))
+                            }
+
+                            else {
+                                Some(text_editor::Binding::Custom(
+                                    Message::ActionPerformed(text_editor::Action::Edit(
+                                        text_editor::Edit::Indent
+                                    ))
+                                ))
+                            }
+                        },
+
                         _ => text_editor::Binding::from_key_press(key_press),
                     }
                 }),
