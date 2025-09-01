@@ -44,6 +44,12 @@ pub trait Editor: Sized + Default {
     /// the [`Editor`].
     fn min_bounds(&self) -> Size;
 
+    /// Returns the currently configured tab width of the editor
+    fn tab_width(&self) -> u16;
+
+    /// Updates the configured tab width of the editor
+    fn set_tab_width(&mut self, size: u16);
+
     /// Updates the [`Editor`] with some new attributes.
     fn update(
         &mut self,

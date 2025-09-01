@@ -200,6 +200,14 @@ impl text::Editor for () {
         ) -> text::highlighter::Format<Self::Font>,
     ) {
     }
+
+    fn tab_width(&self) -> u16 {
+        0
+    }
+
+    fn set_tab_width(&mut self, _size: u16) {
+        //
+    }
 }
 
 impl image::Renderer for () {
