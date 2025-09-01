@@ -648,6 +648,27 @@ impl editor::Editor for Editor {
 
         self.0 = Some(Arc::new(internal));
     }
+
+    fn tab_width(&self) -> u16 {
+        self.internal().editor.tab_width()
+    }
+
+    fn set_tab_width(&mut self, width: u16) {
+        let mut font_system =
+            text::font_system().write().expect("Write font system");
+
+        let editor =
+            self.0.take().expect("Editor should always be initialized");
+
+        let mut internal = Arc::try_unwrap(editor)
+            .expect("Editor cannot have multiple strong references");
+
+        let editor = &mut internal.editor;
+
+        editor.set_tab_width(font_system.raw(), width);
+
+        self.0 = Some(Arc::new(internal));
+    }
 }
 
 impl Default for Editor {

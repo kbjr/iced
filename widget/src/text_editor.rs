@@ -463,6 +463,18 @@ where
     pub fn cursor_position(&self) -> (usize, usize) {
         self.0.borrow().editor.cursor_position()
     }
+
+    /// Returns the currently configured tab width of the editor, used when `Action::Edit(Edit::Indent)` is performed
+    pub fn tab_width(&self) -> u16 {
+        self.0.borrow().editor.tab_width()
+    }
+
+    /// Configures the tab width of the editor, used when `Action::Edit(Edit::Indent)` is performed
+    pub fn set_tab_width(&mut self, width: u16) {
+        let internal = self.0.get_mut();
+
+        internal.editor.set_tab_width(width);
+    }
 }
 
 impl<Renderer> Clone for Content<Renderer>
